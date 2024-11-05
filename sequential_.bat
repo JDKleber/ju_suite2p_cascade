@@ -5,7 +5,7 @@
 CALL "C:\Users\Justus\Anaconda3\Scripts\activate.bat" suite2p
 
 :: Run the first script
-python C:\Users\Justus\calcium\data_suite2p.py
+python -m data_suite2p
 
 :: Deactivate the first environment
 CALL conda deactivate
@@ -14,7 +14,7 @@ CALL conda deactivate
 CALL "C:\Users\Justus\Anaconda3\Scripts\activate.bat" cascade
 
 :: Run the second script
-python C:\Users\Justus\calcium\data_cascade.py
+python -m data_cascade
 
 :: Deactivate the second environment
 CALL conda deactivate
@@ -23,7 +23,7 @@ CALL conda deactivate
 CALL "C:\Users\Justus\Anaconda3\Scripts\activate.bat" data_env
 
 :: Run the third script 
-python C:\Users\Justus\calcium\data_data.py
+python -m data_data
 
 
 
