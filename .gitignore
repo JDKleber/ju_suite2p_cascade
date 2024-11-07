@@ -4,3 +4,5 @@
 __pycache__
 
 gui_configurations.py
+*.bat
+run_default_ops.bat

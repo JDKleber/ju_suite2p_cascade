@@ -7,3 +7,4 @@ Automated Calcium imaging detection (using suite2p) and deconvolution (using cas
 - filepaths in the following files will have to be adjusted before first usage: run_default_ops.bat, run_plots.bat, run_s2p_gui.bat, run_sequence.bat (need to find a way to streamline)
 - the GUI needs an already existing gui_configurations file 
 - call the GUI by executing jd_gui_test.py (plan to adjust so it can be launched by doubleclick)
+- get improved statannotations from geetze github: pip3 install git+https://github.com/getzze/statannotations.git@compat-seaborn-13
