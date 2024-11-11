@@ -4,3 +4,4 @@
 __pycache__
 
 gui_configurations.py
+*.bat
