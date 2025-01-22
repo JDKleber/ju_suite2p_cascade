@@ -11,7 +11,7 @@ class ConfigEditor:
     def __init__(self, master):
         self.master = master
         self.master.title("Ultimate Suite2P + Cascade Configuration Editor")
-        self.master.geometry("600x750")  # Set initial window size
+        self.master.geometry("700x750")  # Set initial window size
 
         # Create a canvas and a scrollbar
         self.canvas = tk.Canvas(master)
@@ -52,7 +52,7 @@ class ConfigEditor:
         if 'pairs' not in self.config:
             self.config['pairs'] = []
         self.data_extension_var = tk.StringVar(value=self.config.get('data_extension', ''))
-        self.frame_rate_var = tk.IntVar(value=self.config.get('frame_rate', 0))
+        self.frame_rate_var = tk.IntVar(value=self.config.get('frame_rate', 10))
         self.ops_path_var = tk.StringVar(value=self.config.get('ops_path', ''))
         self.csc_path_var = tk.StringVar(value=self.config.get('cascade_file_path', ''))
         self.groups = self.config.get('groups', [])
@@ -61,82 +61,69 @@ class ConfigEditor:
         self.bin_width_var = tk.IntVar(value=self.config.get("BIN_WIDTH", ))
 
         # Main folder input
-        tk.Label(self.scrollable_frame, text="Experiment / Main Folder Path:").pack(anchor='w', padx=10, pady=5)
-        tk.Entry(self.scrollable_frame, textvariable=self.main_folder_var, width=50).pack(padx=10)
-        
+        self.main_frame = tk.Frame(self.scrollable_frame)
+        self.main_frame.pack(padx=10, pady=5, anchor='w')
+        tk.Label(self.main_frame, text="Experiment / Main Folder Path:").pack(side=tk.LEFT)
+        tk.Entry(self.main_frame, textvariable=self.main_folder_var, width=50).pack(side=tk.LEFT)
         # Button to open file explorer for selecting a folder
-        tk.Button(self.scrollable_frame, text="Browse", command=self.browse_folder).pack(padx=10, pady=5)
+        tk.Button(self.main_frame, text="Browse", command=self.browse_folder).pack(side=tk.LEFT)
         
 
         # Data extension input
-        tk.Label(self.scrollable_frame, text="Data Extension:").pack(anchor='w', padx=10, pady=5)
-        tk.Entry(self.scrollable_frame, textvariable=self.data_extension_var).pack(padx=10)
+        self.data_frame = tk.Frame(self.scrollable_frame)
+        self.data_frame.pack(padx=10, pady=5, anchor='w')
+        tk.Label(self.data_frame, text="Data Extension:").pack(side=tk.LEFT)
+        tk.Entry(self.data_frame, textvariable=self.data_extension_var, width= 7).pack(padx=10)
 
         
         # Group input
         self.group_frame = tk.Frame(self.scrollable_frame)
-        self.group_frame.pack(padx=10, pady=5)
+        self.group_frame.pack(padx=10, pady=5, anchor='w')
         tk.Label(self.group_frame, text="Adds all subfolders from the Experiment:").pack(side=tk.LEFT)
         tk.Button(self.group_frame, text="Add Experiment Conditions", command=self.add_group).pack(side=tk.LEFT)
 
         #cascade path input
         self.csc_frame = tk.Frame(self.scrollable_frame)
-        self.csc_frame.pack(padx=10, pady=5)
-        tk.Label(self.csc_frame, text="Only Change when Cascade installation changed:").pack(side=tk.LEFT)
+        self.csc_frame.pack(padx=10, pady=5, anchor='w')
+        tk.Label(self.csc_frame, text="Cascade File Path:").pack(side=tk.LEFT)
         tk.Entry(self.csc_frame, textvariable=self.csc_path_var, width=40).pack(side=tk.LEFT)
+        tk.Button(self.csc_frame, text="Browse", command=self.browse_cascade).pack(side=tk.LEFT)
        
         # Ops path input
-        tk.Label(self.scrollable_frame, text="Ops Path Options:").pack(anchor='w', padx=10, pady=5)
-        #tk.Entry(self.scrollable_frame, textvariable=self.ops_path_var, width=50).pack(padx=10)
+        self.ops_frame = tk.Frame(self.scrollable_frame)
+        self.ops_frame.pack(padx=10, pady=5, anchor='w')
+        tk.Label(self.ops_frame, text="Ops.npy Path Options:").pack(side=tk.LEFT)
+        #tk.Entry(self.ops_frame, textvariable=self.ops_path_var, width=40).pack(side=tk.LEFT)
+        
         
         # Option a: Insert file path
-        ops_frame = tk.Frame(self.scrollable_frame)
-        ops_frame.pack(padx=10, pady=5)
-        tk.Entry(ops_frame, textvariable=self.ops_path_var, width=40).pack(side=tk.LEFT)
-        tk.Button(ops_frame, text="Browse", command=self.browse_ops_file).pack(side=tk.LEFT)
+       
+        tk.Entry(self.ops_frame, textvariable=self.ops_path_var, width=40).pack(side=tk.LEFT)
+        tk.Button(self.ops_frame, text="Browse", command=self.browse_ops_file).pack(side=tk.LEFT)
 
         # Option b: Edit default ops
-        tk.Button(self.scrollable_frame, text="Edit Default Ops", command=self.edit_default_ops).pack(pady=5)
+        tk.Button(self.ops_frame, text="Edit Default Ops", command=self.edit_default_ops).pack(side=tk.LEFT)
 
         # Option c: Create new ops file
-        tk.Button(self.scrollable_frame, text="Create New Ops File (WIP)", command=self.create_new_ops_file).pack(pady=5)
-        tk.Label(self.scrollable_frame, text="Press any key in terminal when GUI is stuck").pack(anchor='w', padx=10, pady=5)
+        tk.Button(self.ops_frame, text="Create New Ops File (WIP)", command=self.create_new_ops_file).pack(pady=5, side=tk.LEFT)
+        
+        
         # Frame rate input
-        tk.Label(self.scrollable_frame, text="Frame Rate:").pack(anchor='w', padx=10, pady=5)
-        tk.Entry(self.scrollable_frame, textvariable=self.frame_rate_var).pack(padx=10)
-
-        # TimePoints input
-        # tk.Label(self.scrollable_frame, text="In case you need to rename your Baseconditions:").pack(anchor='w')
-        # tk.Label(self.scrollable_frame, text="Left: Insert the name you assigned your timepoint in the recording").pack(anchor='w')
-        # tk.Label(self.scrollable_frame, text="Right: your desired name").pack(anchor='w')
-        # # self.timepoint_frame = tk.Frame(self.scrollable_frame)
-        # # self.timepoint_frame.pack(padx=10, pady=5)
-        # self.timepoint_key_var = tk.StringVar()
-        # self.timepoint_value_var = tk.StringVar()
-        # # tk.Entry(self.timepoint_frame, textvariable=self.timepoint_key_var, width=20).pack(side=tk.LEFT)
-        # # tk.Entry(self.timepoint_frame, textvariable=self.timepoint_value_var, width=20).pack(side=tk.LEFT)
-        # tk.Label(self.scrollable_frame, text="Press 'Add TimePoint' for each").pack(anchor='w')
+        self.Frame_frame = tk.Frame(self.scrollable_frame)
+        self.Frame_frame.pack(padx=10, pady=5, anchor='w')
+        tk.Label(self.Frame_frame, text="Frame Rate:").pack(side=tk.LEFT)
+        tk.Entry(self.Frame_frame, textvariable=self.frame_rate_var, width =7).pack(padx=10)
+        tk.Label(self.scrollable_frame, text="Press any key in terminal when GUI is stuck", background='yellow').pack( padx=10, pady=5)
 
         # Editable exp_condition
         # tk.Label(self.scrollable_frame, text="Same goes for your Groups, dont leave the brackets empty:").pack(anchor='w')
         # tk.Label(self.scrollable_frame, text="(In case your structure looks like 'TimePoint_Condition' you can remove 'TimePoint_' )").pack(anchor='w')
+        
         self.exp_condition_frame = tk.Frame(self.scrollable_frame)
         self.exp_condition_frame.pack(padx=10, pady=5)
         self.create_dict_entries(self.exp_condition_frame, " ", self.exp_condition)
 
-        # # Editable parameters
-        # self.parameters_frame = tk.Frame(self.scrollable_frame)
-        # self.parameters_frame.pack(padx=10, pady=5)
-        # self.create_parameters_entries()
-
-        # # Editable pairs
-        # self.pairs_var = tk.StringVar()
-        # self.pairs_listbox = tk.Listbox()
-        
-
-
         # Save button
-        # tk.Button(self.scrollable_frame, text="Save Configurations", command=self.save_config).pack(pady=10)
         self.setup_ui()
 
         # Skip Suite2P option
@@ -144,75 +131,13 @@ class ConfigEditor:
         # tk.Checkbutton(self.scrollable_frame, text="Skip Suite2P, no need to run it twice :)", variable=self.skip_suite2p_var).pack(anchor='w', padx=10, pady=5)
 
 
-        # Initialize empty TimePoints dictionary
-        # self.timepoints = {}
-
+  
 
 ################ Functions AREA ################    put in seperate file eventually
     def setup_ui(self):
         # Setup the UI components in here in the future
-        # order is the order of appearance in the gui
-        # self.create_pairs_ui()
         tk.Button(self.scrollable_frame, text="Save Configurations", command=self.save_config).pack(pady=10)
         self.create_process_buttons()
-
-
-    # def create_pairs_ui(self):
-    #     # Create the dropdown menus and "Add Pair" button
-    #     pair_frame = tk.Frame(self.scrollable_frame)
-    #     pair_frame.pack(pady=10)
-
-    #     tk.Label(pair_frame, text="Select Pair:").pack(anchor='w')
-    #     tk.Label(pair_frame, text="Should you have assigned no values to the Experiment Conditions: Save Configurations First!").pack(anchor='w')
-
-    #     self.pair1_var = tk.StringVar()
-    #     self.pair2_var = tk.StringVar()
-
-    #     self.pair1_menu = ttk.Combobox(pair_frame, textvariable=self.pair1_var, state="readonly")
-    #     self.pair2_menu = ttk.Combobox(pair_frame, textvariable=self.pair2_var, state="readonly")
-
-    #     self.pair1_menu.pack(side=tk.LEFT, padx=5)
-    #     self.pair2_menu.pack(side=tk.LEFT, padx=5)
-
-    #     tk.Button(pair_frame, text="Add Pair", command=self.add_pair).pack(side=tk.LEFT, padx=5)
-
-    #     # Display the list of pairs
-    #     self.pairs_listbox = tk.Listbox(pair_frame, height=6)
-    #     self.pairs_listbox.pack(padx=10, pady=5)
-
-    #     tk.Button(pair_frame, text="Delete Selected Pair", command=self.delete_pair).pack(pady=5)
-
-    #     # Load the exp_condition values into the dropdown menus
-    #     self.load_exp_condition_values()   
-
-    # def load_exp_condition_values(self):
-    #     exp_condition_values = list(self.config.get('exp_condition', {}).values())
-    #     self.pair1_menu['values'] = exp_condition_values
-    #     self.pair2_menu['values'] = exp_condition_values
-
-    # def add_pair(self):
-    #     pair1 = self.pair1_var.get()
-    #     pair2 = self.pair2_var.get()
-    #     if pair1 and pair2 and pair1 != pair2:
-    #         pair = (pair1, pair2)
-    #         self.config['pairs'].append(pair)
-    #         self.update_pairs_listbox()
-    #     else:
-    #         messagebox.showerror("Error", "Please select two different conditions.")
-
-    # def update_pairs_listbox(self):
-    #     self.pairs_listbox.delete(0, tk.END)
-    #     for pair in self.config['pairs']:
-    #         self.pairs_listbox.insert(tk.END, str(pair))
-
-    # def delete_pair(self):
-    #     selected_indices = self.pairs_listbox.curselection()
-    #     if selected_indices:
-    #         for index in selected_indices[::-1]:
-    #             del self.config['pairs'][index]
-    #         self.update_pairs_listbox()
-    #     else:
-    #         messagebox.showerror("Error", "Please select a pair to delete.")
 
     def _on_mousewheel(self, event):
         self.canvas.yview_scroll(-1 * (event.delta // 120), "units")   
@@ -241,6 +166,11 @@ class ConfigEditor:
         folder_selected = filedialog.askdirectory()
         if folder_selected:
             self.main_folder_var.set(folder_selected)
+    
+    def browse_cascade(self):
+        folder_selected = filedialog.askdirectory()
+        if folder_selected:
+            self.csc_path_var.set(folder_selected)
 
 
     def load_config(self, filepath):
@@ -306,39 +236,10 @@ class ConfigEditor:
 
         self.update_exp_condition_entries()
         
-        # # After adding groups, update timepoints using unique prefixes
-        # unique_prefixes = self.get_unique_prefixes(prefix_length=3)
-        # for prefix in unique_prefixes:
-        #     if prefix not in self.timepoints:
-        #         self.timepoints[prefix] = prefix  # Set the key-value as the prefix itself
-
-        # # Update timepoint entries UI
-        # self.update_timepoint_entries()
-
         if valid_folders:
             messagebox.showinfo("Groups Added", f"Added Groups: {', '.join(valid_folders)}")
         else:
-            messagebox.showinfo("No Groups Added", "No (sub-)folders with one or more files matching the specified extension were found.")
-            
-            
-    # def update_timepoint_entries(self):
-        # """Update the entries in the timepoints dictionary with the current keys and values."""
-        # Clear previous timepoint entries
-        # for widget in self.timepoint_frame.winfo_children():
-            # widget.destroy()
-
-        # # Create new timepoint entries for each key-value pair in the timepoints dictionary
-        # for key, value in self.timepoints.items():
-        #     # frame = tk.Frame(self.timepoint_frame)
-        #     frame.pack(padx=10, pady=5)
-        #     tk.Label(frame, text="Key:").pack(side=tk.LEFT)
-        #     key_var = tk.StringVar(value=key)
-        #     value_var = tk.StringVar(value=value)
-        #     self.timepoints[key] = value_var  # Store the variable to the dictionary
-        #     tk.Entry(frame, textvariable=key_var, width=20).pack(side=tk.LEFT)
-        #     tk.Label(frame, text="Value:").pack(side=tk.LEFT)
-        #     tk.Entry(frame, textvariable=value_var, width=20).pack(side=tk.LEFT)               
-            
+            messagebox.showinfo("No Groups Added", "No (sub-)folders with one or more files matching the specified extension were found.")      
 
     def create_dict_entries(self, master, title, dictionary):
         """will allow you to edit dictionaries in the configurations file"""
@@ -360,109 +261,7 @@ class ConfigEditor:
         for widget in self.exp_condition_frame.winfo_children():
             widget.destroy()  # Remove old entries
         self.create_dict_entries(self.exp_condition_frame, "exp_condition", self.exp_condition)
-
-    # def create_parameters_entries(self):
-    #     """Create entries for the parameters dictionary, contains lists for the various dropdown options"""
-    #     self.parameters_vars = {}
-    #     # List of selectable values for 'stat_test'
-    #     stat_test_options = [
-    #         "t-test_ind", "t-test_welch",   "t-test_paired", "Mann-Whitney", "Mann-Whitney-gt", "Mann-Whitney-ls", "Wilcoxon", "Kruskal", "Brunner-Munzel"]
-        
-    #     # List of selectable values for 'type'
-    #     type_options = [
-    #         "strip", "swarm", "box", "violin", 
-    #         "boxen", "point", "bar", "count"]
-        
-    #     # List of selectable values for 'legend'
-    #     legend_options = ["auto", "inside", "false"]
-
-    #     # Feature selection from CSV file
-    #     self.load_features_from_csv()
-        
-    #     # Ensure 'feature' key exists in parameters
-    #     parameters = self.config.get('parameters', {})
-    #     if 'feature' not in parameters:
-    #         parameters['feature'] = ['Active_Neuron_Proportion']  # Default feature
-
-
-    #     for key, value in self.config.get('parameters', {}).items():
-    #         frame = tk.Frame(self.parameters_frame)
-    #         frame.pack(pady=5)
-    #         tk.Label(frame, text=key).pack(side=tk.LEFT)
-            
-    #         var = tk.StringVar(value=value)
-    #         self.parameters_vars[key] = var
-            
-    #         if key == 'stat_test':
-    #             dropdown = tk.OptionMenu(frame, var, *stat_test_options)
-    #             dropdown.pack(side=tk.LEFT)
-    #         elif key == 'type':
-    #             dropdown = tk.OptionMenu(frame, var, *type_options)
-    #             dropdown.pack(side=tk.LEFT)
-    #         elif key == 'legend':
-    #             dropdown = tk.OptionMenu(frame, var, *legend_options)
-    #             dropdown.pack(side=tk.LEFT)
-    #         elif key == 'feature':
-    #             # Use Listbox for multiple feature selection
-    #             feature_listbox = tk.Listbox(frame, selectmode=tk.MULTIPLE, height=6, width=40)
-    #             for feature in self.features_list:
-    #                 feature_listbox.insert(tk.END, feature)
-    #             feature_listbox.pack(side=tk.LEFT)
-    #             # Store reference to feature_listbox as an instance variable
-    #             self.feature_listbox = feature_listbox
-
-    #         elif key == 'testby':                
-    #             continue  # Skip 'testby' as it is a list
-    #         else:
-    #             tk.Entry(frame, textvariable=var, width=20).pack(side=tk.LEFT)
-
-    # def load_features_from_csv(self):
-    #     """Load column names from the 'new_experiment_summary.csv' for feature selection"""
-    #     main_folder = self.main_folder_var.get().strip()
-    #     if not os.path.exists(main_folder):
-    #         messagebox.showerror("Error", "Main folder does not exist.")
-    #         self.features_list = ['Active_Neuron_Proportion']
-    #         return
-
-    #     csv_file_path = os.path.join(main_folder, 'new_experiment_summary.csv')
-    #     if not os.path.exists(csv_file_path):
-    #         messagebox.showerror("Error", f"File {csv_file_path} not found.")
-    #         self.features_list = ['Active_Neuron_Proportion']
-    #         return
-        
-    #     # Read the CSV file to get the columns
-    #     try:
-    #         import pandas as pd
-    #         df = pd.read_csv(csv_file_path)
-    #         # Exclude certain columns from the features list
-    #         excluded_columns = ['Prediction_File', 'Group', 'Time_Point']  # Add the columns you want to exclude
-    #         self.features_list = [col for col in df.columns if col not in excluded_columns]
-                  
-    #     except Exception as e:
-    #         messagebox.showerror("Error", f"Failed to read the CSV file: {str(e)}")
-    #         self.features_list = ['Active_Neuron_Proportion']
-    #         return
-
-    # ####copied from functions_data_transformation.py to get the TimePoints names before csv creation
-    # def get_unique_prefixes(self, prefix_length=3):
-    #     """Get unique prefixes from the group names, corresponding to the prefixes chosen by cascade"""
-    #     prefixes = set()
-    #     for name in self.groups:
-    #                 # Normalize the path by using os.path.normpath, which handles both slashes
-    #         normalized_path = os.path.normpath(name)
-            
-    #         # Remove drive letter and leading directories by splitting and taking the last part
-    #         last_part = normalized_path.split(os.sep)[-1]  # Get the last part of the path
-            
-    #         # Now, get the prefix based on the desired length (e.g., first 3 characters)
-    #         prefix = last_part[:prefix_length]
-    #         prefixes.add(prefix)
-    #     return prefixes
-
-
-        
-        
-
+   
     def csc_path(self):
         """Call this function to get or set the path to the cascade file"""
         csc_path = self.csc_path_var.get().strip()
@@ -476,15 +275,6 @@ class ConfigEditor:
         
         return csc_path
     
-    # def reload_features_listbox(self):
-    #     """Reload the feature listbox to reflect updated feature list from config."""
-    #     # First, clear the listbox
-    #     self.feature_listbox.delete(0, tk.END)
-        
-    #     # Add the updated features
-    #     for feature in self.features_list:
-    #         self.feature_listbox.insert(tk.END, feature)
-
     def reload_config(self):
         """Reload the configuration file to refresh the GUI."""
         self.config = self.load_config("gui_configurations.py")  # Reload the configuration file
@@ -494,14 +284,11 @@ class ConfigEditor:
         self.frame_rate_var.set(self.config.get('frame_rate', 10))
         self.ops_path_var.set(self.config.get('ops_path', ''))
         self.csc_path_var.set(self.config.get('cascade_file_path', ''))
-        # self.groups = self.config.get('groups', [])
-        # self.exp_condition = {key: value for key, value in self.config.get('exp_condition', {}).items()}
-        # self.timepoints = self.config.get('TimePoints', {})
-        
+
         # Update the GUI components to reflect the new values
         self.update_exp_condition_entries()
         self.create_parameters_entries()
-        # self.reload_features_listbox()
+  
         # Optionally, you can also refresh other specific widgets or labels here.
         messagebox.showinfo("Config Reloaded", "Configuration file has been reloaded successfully.")
     
@@ -520,23 +307,10 @@ class ConfigEditor:
 
         exp_condition = {key_var.get(): value_var.get() for key_var, (key_var, value_var) in self.dict_vars.items()} ### ????????????? is this still needed?? 
 
-        # pairs_input = self.pairs_var.get().strip()
-
-        # # Get selected features as a string in brackets
-        # selected_features = [self.feature_listbox.get(i) for i in self.feature_listbox.curselection()]
-
-        # selected_features = ", ".join([f"'{feature}'" for feature in selected_features])
-        
         # Construct the absolute path to the configuration file, saving uses the same logic as loading now
         script_dir = os.path.dirname(__file__)
         config_filepath = os.path.join(script_dir, 'gui_configurations.py')
 
-        # if selected_features:
-        #     selected_features = f"[{selected_features}]"
-        # else:
-        #     selected_features = "['Active_Neuron_Proportion', 'Total_Estimated_Spikes_proportion_scaled']"
-        # #clearing the parameters dictionary before adding the new values
-        # self.config['parameters']['feature'] = selected_features
         with open(config_filepath, 'w') as f:
             f.write('import numpy as np \n')
             f.write(f"main_folder = r'{main_folder}'\n")
@@ -554,16 +328,19 @@ class ConfigEditor:
             f.write(f"EXPERIMENT_DURATION = {EXPERIMENT_DURATION}\n")
             f.write("FRAME_INTERVAL = 1 / frame_rate\n")
             f.write("FILTER_NEURONS = True\n")
-
-            # f.write("TimePoints = {\n")
-            # for key, value_var in self.timepoints.items():
-            #     f.write(f"    '{key}': '{value_var.get()}',\n")
-            # f.write("}\n")
-
             f.write("exp_condition = {\n")
             for key, (key_var, value_var) in self.dict_vars.items():
                 f.write(f"    '{key_var.get()}': '{value_var.get()}',\n")
             f.write("}\n")
+
+            if self.iscell_var.get() == False:
+                f.write("overwrite = True \n")
+                f.write("iscell_check= False \n")
+                f.write("update_iscell = True \n")
+            else:
+                f.write("overwrite = False \n")
+                f.write("iscell_check= True \n")
+                f.write("update_iscell = False \n")
             
             #### Add addtionals here, maybe make them editable in the gui as well
             f.write("## Additional configurations\n")
@@ -611,6 +388,11 @@ class ConfigEditor:
         for text, value in bat_files:
             tk.Radiobutton(parent_frame, text=text, variable=self.selected_bat_file, value=value).pack(anchor='w')
     
+    def create_iscell_button(self, parent_frame):
+        self.iscell_var = tk.BooleanVar()
+        tk.Checkbutton(parent_frame, text="use iscell.npy", variable=self.iscell_var).pack(pady=5)
+        return self.iscell_var
+
     def create_process_button(self, parent_frame):
         tk.Button(parent_frame, text="Process", command=self.proceed).pack(pady=5)
 
@@ -628,6 +410,7 @@ class ConfigEditor:
         tk.Label(process_frame, text="Select Process:").pack(anchor='w')
 
         self.create_bat_file_radiobuttons(process_frame)
+        self.create_iscell_button(process_frame)
         self.create_process_button(process_frame)
 
     
